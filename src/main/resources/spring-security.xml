@@ -7,6 +7,15 @@
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
+	<sec:http pattern="/css/**" security="none" />
+	<sec:http pattern="/js/**" security="none" />
+
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider>
+			<sec:jdbc-user-service data-source-ref="dataSource" />
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+
 	<sec:http use-expressions="true">
 		<sec:intercept-url pattern="/admin/**" access="hasAnyAuthority('ROLE_ADMIN')" />
 		<sec:intercept-url pattern="/manager/**" access="hasRole('ROLE_MANAGER')"/>
@@ -16,13 +25,13 @@
 		<sec:logout />
 	</sec:http>
 
-	<sec:authentication-manager>
-		<sec:authentication-provider>
-			<sec:user-service>
-				<sec:user name="hcchoi" password="1234" authorities="ROLE_USER" />
-				<sec:user name="manager" password="qwer" authorities="ROLE_MANAGER" />
-				<sec:user name="admin" password="asdf" authorities="ROLE_ADMIN, ROLE_USER" />
-			</sec:user-service>
-		</sec:authentication-provider>
-	</sec:authentication-manager>
+	<!--<sec:authentication-manager>-->
+		<!--<sec:authentication-provider>-->
+			<!--<sec:user-service>-->
+				<!--<sec:user name="hcchoi" password="1234" authorities="ROLE_USER" />-->
+				<!--<sec:user name="manager" password="qwer" authorities="ROLE_MANAGER" />-->
+				<!--<sec:user name="admin" password="asdf" authorities="ROLE_ADMIN, ROLE_USER" />-->
+			<!--</sec:user-service>-->
+		<!--</sec:authentication-provider>-->
+	<!--</sec:authentication-manager>-->
 </beans>
