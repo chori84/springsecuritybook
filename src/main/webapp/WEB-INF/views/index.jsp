@@ -7,17 +7,22 @@
 </head>
 <body>
 
-<sec:authorize access="isAuthenticated()">
-				<sec:authentication property="name" />님 환영합니다.
-</sec:authorize>
-
 <ul>
-				<li><a href="<c:url value='/home/main' />">/home/main</a></li>
-				<li><a href="<c:url value='/member/main' />">/member/main</a></li>
-				<li><a href="<c:url value='/manager/main' />">/manager/main</a></li>
-				<li><a href="<c:url value='/admin/main' />">/admin/main</a></li>
+				<sec:authorize access="hasAuthority('USER_MANAGER')">
+								<li><a href="<c:url value='/admin/usermanager/main' />">사용자 관리자</a></li>
+				</sec:authorize>
+				
+				<sec:authorize access="hasAuthority('USER')">
+								<li><a href="<c:url value='/member/main' />">회원메인</a></li>
+				</sec:authorize>
+				
+				<sec:authorize access="! isAuthenticated()">
+								<li><a href="<c:url value='/user/loginform' />">로그인</a></li>
+								<li><a href="<c:url value='/user/join' />">회원가입</a> </li>
+				</sec:authorize>
+				
 				<sec:authorize access="isAuthenticated()">
-								<li><a href="<c:url value='/j_spring_security_logout' />">/j_spring_security_logout</a></li>
+								<li><a href="<c:url value='/user/logout' />">로그아웃</a></li>
 				</sec:authorize>
 </ul>
 

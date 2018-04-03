@@ -10,19 +10,40 @@
 	<sec:http pattern="/css/**" security="none" />
 	<sec:http pattern="/js/**" security="none" />
 
+	<bean id="customUserDetailsService"
+		  class="com.chori.springsecuritybook.custom.CustomUserDetailsService" />
+
+	<bean id="customAuthenticationProvider"
+		  class="com.chori.springsecuritybook.custom2.CustomAuthenticationProvider" />
+
+	<bean id="passwordEncoder"
+		  class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
 	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider ref="customAuthenticationProvider" />
+		<sec:authentication-provider user-service-ref="customUserDetailsService" />
+
 		<sec:authentication-provider>
-			<sec:jdbc-user-service data-source-ref="dataSource" />
+			<sec:jdbc-user-service data-source-ref="dataSource" id="jdbcUserService" />
+			<sec:password-encoder ref="passwordEncoder" />
 		</sec:authentication-provider>
 	</sec:authentication-manager>
 
 	<sec:http use-expressions="true">
-		<sec:intercept-url pattern="/admin/**" access="hasAnyAuthority('ROLE_ADMIN')" />
-		<sec:intercept-url pattern="/manager/**" access="hasRole('ROLE_MANAGER')"/>
+		<sec:access-denied-handler error-page="/security/accessDenied" />
+		<sec:intercept-url pattern="/user/loginform" access="permitAll" />
+		<sec:intercept-url pattern="/user/login" access="permitAll" />
+
+		<sec:intercept-url pattern="/admin/usermanager/**"
+						   access="hasAnyAuthority('USER_MANAGER')" />
 		<sec:intercept-url pattern="/member/**" access="isAuthenticated()" />
 		<sec:intercept-url pattern="/**" access="permitAll" />
-		<sec:form-login />
-		<sec:logout />
+		<sec:form-login
+			login-page="/user/loginform" login-processing-url="/user/login"
+			username-parameter="userid" password-parameter="password"
+			default-target-url="/index"
+			authentication-failure-url="/user/loginform?error=true" />
+		<sec:logout logout-url="/user/logout" />
 	</sec:http>
 
 	<!--<sec:authentication-manager>-->
